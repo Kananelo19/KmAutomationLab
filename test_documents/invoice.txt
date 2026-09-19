@@ -1,0 +1,23 @@
+ABC Plumbing LLC
+4200 Industrial Drive
+Little Rock, AR 72204
+
+INVOICE
+
+Invoice Number: INV-2026-1042
+Invoice Date: September 16, 2026
+Due Date: October 1, 2026
+
+Bill To:
+Riverstone Property Management
+Property: 1420 Main Street, Little Rock, AR 72202
+
+Service:
+Emergency plumbing repair
+Replace damaged water valve
+
+Subtotal: $4,125.00
+Tax: $371.25
+Total Due: $4,496.25
+
+Thank you for your business.

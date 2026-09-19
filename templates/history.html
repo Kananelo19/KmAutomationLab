@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Invoice History</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/dashboard.css"
+    >
+</head>
+
+<body>
+
+<div class="history-page">
+
+    <a
+        class="back"
+        href="/dashboard"
+    >
+        ← Back to Invoice Operations
+    </a>
+
+    <header>
+
+        <div>
+
+            <div class="eyebrow">
+                AUDIT HISTORY
+            </div>
+
+            <h2>
+                {{ invoice.vendor }}
+            </h2>
+
+            <p>
+                {{ invoice.invoice_number }}
+                ·
+                ${{ "{:,.2f}".format(invoice.amount) }}
+            </p>
+
+        </div>
+
+        <span
+            class="status {{ invoice.workflow_status }}"
+        >
+            {{
+                invoice.workflow_status
+                |replace("_", " ")
+                |title
+            }}
+        </span>
+
+    </header>
+
+
+    <section class="details">
+
+        <article>
+            <span>Property</span>
+            <strong>
+                {{ invoice.property }}
+            </strong>
+        </article>
+
+        <article>
+            <span>Due Date</span>
+            <strong>
+                {{ invoice.due_date }}
+            </strong>
+        </article>
+
+        <article>
+            <span>Extraction</span>
+            <strong>
+                {{ invoice.extraction_method|title }}
+            </strong>
+        </article>
+
+    </section>
+
+
+    <section class="panel">
+
+        <div class="panel-title">
+
+            <div>
+                <div class="eyebrow">
+                    TIMELINE
+                </div>
+
+                <h3>
+                    Processing History
+                </h3>
+            </div>
+
+        </div>
+
+
+        <div class="timeline">
+
+            {% for event in events %}
+
+            <article class="event">
+
+                <div class="dot"></div>
+
+                <div>
+
+                    <div class="event-head">
+
+                        <strong>
+                            {{
+                                event.event_type
+                                |replace("_", " ")
+                                |title
+                            }}
+                        </strong>
+
+                        <span>
+                            {{ event.actor|title }}
+                        </span>
+
+                    </div>
+
+                    <p>
+                        {{ event.message }}
+                    </p>
+
+                    <small>
+                        {{ event.created_at }}
+                    </small>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

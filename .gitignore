@@ -1,0 +1,19 @@
+# Secrets
+.env
+
+# Runtime storage
+storage/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+
+# Temporary backups
+*.backup

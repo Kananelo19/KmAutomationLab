@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>KM Automation</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/dashboard.css"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div>
+            <div class="logo">KM</div>
+
+            <h1>KM Automation</h1>
+
+            <p>
+                Business Operations
+            </p>
+
+            <nav>
+                <a
+                    class="active"
+                    href="/dashboard"
+                >
+                    Invoice Operations
+                </a>
+
+                <a
+                    href="/docs"
+                    target="_blank"
+                >
+                    Developer API
+                </a>
+            </nav>
+        </div>
+
+        <div class="online">
+            <span></span>
+            System Operational
+        </div>
+
+    </aside>
+
+
+    <main>
+    {% if result == "duplicate" %}
+
+<div class="alert alert-info">
+    <div class="alert-icon">!</div>
+    <div>
+        <strong>Duplicate invoice detected</strong>
+        <p>
+            This invoice already exists.
+            No additional invoice record was created.
+        </p>
+    </div>
+</div>
+
+{% elif result == "manager_review" %}
+
+<div class="alert alert-warning">
+    <div class="alert-icon">!</div>
+    <div>
+        <strong>Manager review required</strong>
+        <p>
+            The invoice was processed successfully
+            and has been added to the review queue.
+        </p>
+    </div>
+</div>
+
+{% elif result == "approved_for_processing" %}
+
+<div class="alert alert-success">
+    <div class="alert-icon">✓</div>
+    <div>
+        <strong>Invoice processed successfully</strong>
+        <p>
+            The invoice passed validation and
+            automatic processing rules.
+        </p>
+    </div>
+</div>
+
+{% endif %}
+
+        <header>
+
+            <div>
+                <div class="eyebrow">
+                    OPERATIONS CENTER
+                </div>
+
+                <h2>
+                    Invoice Automation
+                </h2>
+
+                <p>
+                    Automated invoice intake,
+                    validation and approval management.
+                </p>
+            </div>
+
+            <div class="demo">
+                DEMO ENVIRONMENT
+            </div>
+
+        </header>
+
+
+        <section class="stats">
+
+            <article>
+                <span>Total Invoices</span>
+                <strong>
+                    {{ total_invoices }}
+                </strong>
+                <small>Processed records</small>
+            </article>
+
+            <article>
+                <span>Needs Review</span>
+                <strong>
+                    {{ review_count }}
+                </strong>
+                <small>Manager attention</small>
+            </article>
+
+            <article>
+                <span>Auto Processed</span>
+                <strong>
+                    {{ automatic_count }}
+                </strong>
+                <small>No manual decision</small>
+            </article>
+
+            <article>
+                <span>Manager Approved</span>
+                <strong>
+                    {{ approved_count }}
+                </strong>
+                <small>Human decisions</small>
+            </article>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-title">
+                <div>
+                    <div class="eyebrow">
+                        INTAKE
+                    </div>
+
+                    <h3>
+                        Process Invoice
+                    </h3>
+                </div>
+            </div>
+
+            <form
+                class="upload"
+                action="/dashboard/upload"
+                method="post"
+                enctype="multipart/form-data"
+            >
+
+                <input
+                    type="file"
+                    name="file"
+                    accept=".pdf,application/pdf"
+                    required
+                >
+
+                <button type="submit">
+                    Process Invoice
+                </button>
+
+            </form>
+
+            <p class="hint">
+                Upload a PDF. KM Automation will
+                extract the invoice, validate the
+                information, detect duplicates and
+                determine whether human approval
+                is required.
+            </p>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-title">
+
+                <div>
+                    <div class="eyebrow">
+                        HUMAN REVIEW
+                    </div>
+
+                    <h3>
+                        Manager Review
+                    </h3>
+                </div>
+
+                <span class="badge">
+                    {{ review_count }} pending
+                </span>
+
+            </div>
+
+
+            {% if review_invoices %}
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Invoice</th>
+                        <th>Property</th>
+                        <th>Amount</th>
+                        <th>Decision</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for invoice in review_invoices %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ invoice.vendor }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ invoice.invoice_number }}
+                        </td>
+
+                        <td>
+                            {{ invoice.property }}
+                        </td>
+
+                        <td class="money">
+                            ${{ "{:,.2f}".format(invoice.amount) }}
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <form
+                                    action="/dashboard/invoices/{{ invoice.id }}/approve"
+                                    method="post"
+                                >
+                                    <button
+                                        class="approve"
+                                        type="submit"
+                                    >
+                                        Approve
+                                    </button>
+                                </form>
+
+                                <form
+                                    action="/dashboard/invoices/{{ invoice.id }}/reject"
+                                    method="post"
+                                >
+                                    <button
+                                        class="reject"
+                                        type="submit"
+                                    >
+                                        Reject
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty">
+                <div>✓</div>
+
+                <strong>
+                    Review queue clear
+                </strong>
+
+                <p>
+                    No invoices currently require
+                    manager attention.
+                </p>
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-title">
+                <div>
+                    <div class="eyebrow">
+                        ACTIVITY
+                    </div>
+
+                    <h3>
+                        Recent Invoices
+                    </h3>
+                </div>
+            </div>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Invoice</th>
+                        <th>Amount</th>
+                        <th>Extraction</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for invoice in invoices %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ invoice.vendor }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ invoice.invoice_number }}
+                        </td>
+
+                        <td class="money">
+                            ${{ "{:,.2f}".format(invoice.amount) }}
+                        </td>
+
+                        <td>
+                            <span class="tag">
+                                {{ invoice.extraction_method }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span
+                                class="status {{ invoice.workflow_status }}"
+                            >
+                                {{
+                                    invoice.workflow_status
+                                    |replace("_", " ")
+                                    |title
+                                }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <a
+                                class="history"
+                                href="/dashboard/invoices/{{ invoice.id }}/history"
+                            >
+                                View History
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            KM Automation · Invoice Operations Demo
+        </footer>
+
+    </main>
