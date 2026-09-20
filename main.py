@@ -218,7 +218,6 @@ def dashboard_history(
         context={
             "invoice": invoice,
             "events": events,
-            "Result": result,
         },
     )
 
