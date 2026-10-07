@@ -4,6 +4,8 @@
 KM Automation Lab is a business process automation demo built to show how repetitive invoice-processing workflows can be automated while keeping human approval in the loop for higher-risk transactions.
 
 ## Screenshots
+![Operations dashboard](dashboard-v2.png)
+![Manager review queue](review-queue-v2.png)
 
 ## Demo: Invoice Operations
 
